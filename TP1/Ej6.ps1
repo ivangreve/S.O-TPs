@@ -30,7 +30,7 @@ Integrantes del grupo:
 Greve Iván - 38617763
 
 
-Entrega: Primera Reentrega
+Entrega: Primera Entrega
 #>
 
 Param
