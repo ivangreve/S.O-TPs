@@ -21,7 +21,11 @@ Programacion de scripts basicos en Powershell
 Ejercicio 02
 
 Integrantes del grupo:
-Greve Ivan - 38617763
+Greve Iván - 38617763
+Boullon Daniel Ernesto - 36385582
+Silvero Heber Ezequiel - 36404597
+Valenzuela Juan Santiago - 38624490
+Nicolás Satragno - 38527273
 
 
 Entrega: Primera Entrega

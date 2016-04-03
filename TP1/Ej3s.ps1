@@ -9,7 +9,7 @@ Muestra el porcentaje ocupado por cada tipo de archivo (determinado por la exten
 El directorio del archivo en el que se requiere para obtener los porcentajes de cada tipo de archivo.
 
 .EXAMPLE
-.\Ej2.ps1 “ruta_del_directorio”
+
 
 
 #>
@@ -21,7 +21,11 @@ Programacion de scripts basicos en Powershell
 Ejercicio 03
 
 Integrantes del grupo:
-Greve Ivan - 38617763
+Greve Iván - 38617763
+Boullon Daniel Ernesto - 36385582
+Silvero Heber Ezequiel - 36404597
+Valenzuela Juan Santiago - 38624490
+Nicolás Satragno - 38527273
 
 
 Entrega: Primera Entrega

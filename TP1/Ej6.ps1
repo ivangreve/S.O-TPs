@@ -28,6 +28,10 @@ Ejercicio 06
 
 Integrantes del grupo:
 Greve Iván - 38617763
+Boullon Daniel Ernesto - 36385582
+Silvero Heber Ezequiel - 36404597
+Valenzuela Juan Santiago - 38624490
+Nicolás Satragno - 38527273
 
 
 Entrega: Primera Entrega
