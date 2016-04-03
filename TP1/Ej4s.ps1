@@ -43,27 +43,23 @@ Param(
 
 BEGIN
 {
-
     $ArrayList = [System.Collections.ArrayList]@()
-    
-    
 }
-Process
+
+PROCESS
 {
     
 
     foreach ($obj in $Pipeline) 
     {
-        $ArrayList.Add($obj)
-
-    
+        $ArrayList.Add($obj) #Lleno el array con los objetos que van llegando por el pipeline
     }
     
 }
 
 END
 {
-    if($ordenamiento -eq "desc") #Ordeno de forma descendente segun las propiedades
+    if($ordenamiento -eq "desc") #Ordeno de forma descendente según las propiedades
     {
         $ArrayList | Sort-Object -Property $propiedades -Descending | 
                      Select-Object $propiedades | 
@@ -72,14 +68,14 @@ END
     }
     else
     {
-        if($ordenamiento -eq "asc")
+        if($ordenamiento -eq "asc") #Ordeno de forma ascendente según las propiedades.
         {
             $ArrayList | Sort-Object -Property $propiedades | 
                          Select-Object $propiedades | 
                          Where-Object {$_.$propiedadfiltro -like $filtro} | Format-Table
             
         }
-        else
+        else #En el caso que no sea ni asc ni desc la lista no se morificará.
         {
             $ArrayList | Select-Object $propiedades | 
                          Where-Object {$_.$propiedadfiltro -like $filtro} | Format-Table
