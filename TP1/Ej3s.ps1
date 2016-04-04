@@ -56,9 +56,9 @@ foreach($obj in $contenido)
         $linea = $obj -split ""
         $array.Add($linea)
         #Write-Host $linea
-    $i++
+  
     }
-
+    $i++
 }
 
 Write-Host " "
