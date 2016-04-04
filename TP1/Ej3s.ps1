@@ -36,5 +36,35 @@ Entrega: Primera Entrega
 
 Param(
   #Este  va a recibir la entrada por pipe si hubiera. Si no, queda en "blanco"
-    [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = “.”    
+    [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = “D:\Universidad\Archivos de prueba Tps\matriz.txt”    
 )
+
+$array = [System.Collections.ArrayList]@()
+
+$contenido = Get-Content $path
+
+$i = 0
+
+
+foreach($obj in $contenido)
+{
+    if($i -eq 0)
+    {
+        $N = $obj
+    }
+    else
+    {
+        $linea = $obj -split ""
+        $array.Add($linea)
+        #Write-Host $linea
+    }
+    $i++
+}
+
+Write-Host " "
+write-host $array[0][1] 
+#La matriz se llena pero desde la segunda fila nose porque(? si quieren jueguen con las posiciones y van a ver (Creo que guarda el salto de linea),
+#Cuando ejecuta nose porque motivo me muestra "0 1 2" , creo que es problema del metodo Add()
+
+Write-Host " "
+write-host "N:"$N
