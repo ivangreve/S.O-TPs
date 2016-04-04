@@ -2,9 +2,10 @@
 .SYNOPSIS
 Resuelve un sistema de ecuaciones de n variables y n incógnitas.
 .DESCRIPTION
-Recive un txt ( por defecto en la raiz del script con el nombre gauss.txt)
+Recive un txt con los datos para hacer resolver el sistema de ecuaciones y lo guarda en otro txt de salida.
 .PARAMETER path
 El directorio del archivo en el que se requiere para sacar los coeficioneste de los datos
+ ( por defecto en la raiz del script con el nombre gauss.txt)
 
 .EXAMPLE
 
