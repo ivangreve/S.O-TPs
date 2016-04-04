@@ -1,12 +1,10 @@
 ﻿<#
 .SYNOPSIS
-Muestra el porcentaje ocupado por cada tipo de archivo.
-
+Resuelve un sistema de ecuaciones de n variables y n incógnitas.
 .DESCRIPTION
-Muestra el porcentaje ocupado por cada tipo de archivo (determinado por la extensión) en un directorio especifico. Si no se ingresa el path se usara el path relativo.
-
+Recive un txt ( por defecto en la raiz del script con el nombre gauss.txt)
 .PARAMETER path
-El directorio del archivo en el que se requiere para obtener los porcentajes de cada tipo de archivo.
+El directorio del archivo en el que se requiere para sacar los coeficioneste de los datos
 
 .EXAMPLE
 
@@ -36,7 +34,7 @@ Entrega: Primera Entrega
 
 Param(
   #Este  va a recibir la entrada por pipe si hubiera. Si no, queda en "blanco"
-    [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = “D:\Universidad\Archivos de prueba Tps\matriz.txt”    
+    [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”    
 )
 
 $array = [System.Collections.ArrayList]@()
@@ -57,8 +55,9 @@ foreach($obj in $contenido)
         $linea = $obj -split ""
         $array.Add($linea)
         #Write-Host $linea
-    }
     $i++
+    }
+
 }
 
 Write-Host " "
