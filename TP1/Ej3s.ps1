@@ -1,4 +1,20 @@
 <#
+.SYNOPSIS
+Resuelve un sistema de ecuaciones de n variables y n incógnitas.
+.DESCRIPTION
+Recive un txt con los datos para hacer resolver el sistema de ecuaciones y lo guarda en otro txt de salida.
+el parametro es -path, debe tener una estructura como la siguiente:
+3 (n = cantidad de incognitas)
+3 2 1 1   (las tres ecuaciones con los primeros 3 coeficientes y la 4 columna de terminos independientes)
+5 3 3 3
+1 1 1 0
+Devuelve 
+.PARAMETER path
+El directorio del archivo en el que se requiere para sacar los datos
+( por defecto en la raiz del script con el nombre gauss.txt)
+.EXAMPLE
+#>
+<#
 Nombre del Script: Ej3.ps1
 Trabajo Practico nro 1
 Programacion de scripts basicos en Powershell
@@ -11,7 +27,6 @@ Valenzuela Juan Santiago - 38624490
 Nicolás Satragno - 38527273
 Entrega: Primera Entrega
 #>
-
 Param(
 [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”
 )
