@@ -1,14 +1,4 @@
 <#
-.SYNOPSIS
-Resuelve un sistema de ecuaciones de n variables y n incógnitas.
-.DESCRIPTION
-Recive un txt con los datos para hacer resolver el sistema de ecuaciones y lo guarda en otro txt de salida.
-.PARAMETER path
-El directorio del archivo en el que se requiere para sacar los coeficioneste de los datos
-( por defecto en la raiz del script con el nombre gauss.txt)
-.EXAMPLE
-#>
-<#
 Nombre del Script: Ej3.ps1
 Trabajo Practico nro 1
 Programacion de scripts basicos en Powershell
@@ -26,74 +16,111 @@ Param(
 [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”
 )
 
-$array = [System.Collections.ArrayList]@()
 
-$contenido = Get-Content $path
+#antes que nada se valida el path
+$ExistePath = Test-Path $path 
 
-$i = $true
-
-foreach($obj in $contenido)
+if ($ExistePath -eq $false)
 {
-    if($i)
+     Write-Host "El path de entrada no existe"
+     exit;
+}
+
+
+
+$array = New-Object System.Collections.ArrayList #Se crea la matriz
+
+$contenido = Get-Content $path #Se agarra el contenido del .txt
+
+$i = $true #variable que usare luego
+
+foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector de lineas de texto
+{
+    if($i) #entra solo para agarrar la primera linea osea n.
         {
-            [int]$N = $obj 
-            $i = $false;
+            [int]$n = $obj  #guardo n. 
+            $i = $false; # asi no vuelve a entrar 
         }
     else
         {
-            $linea = $obj -split " "
-            [int]$array.Add($linea)      
+            $linea = $obj -split " " # separo por espacios la linea de coeficientes asi me agarra cada coeficiente
+            $array.Add($linea)      
         }
 }
+    
+    #para visualizar la matriz a tratar
+    Write-Host "Matriz: $n"
+    for( $i=0; $i -lt $n; $i++ )
+    {
+          write-host $array[$i] | format-list #muestro la matriz en forma elegante :3 
+    }
+   
 
-write-host "N:"$N;
-Write-Host "Matriz: "
-write-host $array[0][0]
-write-host $array[0][1]
-write-host $array[0][2]
-write-host $array[1][0]
-write-host $array[1][1]
-write-host $array[1][2]
-write-host $array[2][0]
-write-host $array[2][1]
-write-host $array[2][2]
-write-host " " 
-
-for($j=0;$j-lt$N;$j++)
+#Aca esta toda la logica, es logica, no solo explico el codigo.
+for( $j=0; $j -lt $n; $j++ )
 {
-    write $j
-
-    $maxEl=[math]::abs($array[$j][$j]);
-    $maxRow=$j
-    for($k=$j+1;$k-lt$N;$k++) {
-        
-        if( [math]::abs($array[$k][$j])-gt$maxEl ){
+    
+    [double]$maxEl=[math]::abs($array[$j][$j]);  #funcion matematicas se usa [math]::funcion, en este caso abs(modulo) y casteo el double.
+    [int]$maxRow=$j #tema de logica guardo la columna
+    for( $k=($j+1); $k -lt $n; $k++ ) {
+        if( [double][math]::abs( $array[$k][$j] ) -gt [double]$maxEl ){
             $maxEl=$array[$k][$j];
-            $maxRow=$j
-
-        }    
+            $maxRow=$k
+        }  
     }
     
-
-    for($k=$j;$k-lt$N+1;$k++){
-                   
-        [int]$temp=$array[$maxRow][$k];
-        $array[$maxRow][$k]=$array[$j][$k];
-        $array[$j][$k]=$temp;
+    
+    #for 1
+    for( $k=$j; $k -lt $n+1; $k++ ) {
+                
+        [double]$temp=$array[$maxRow][$k];
+        $array[$maxRow][$k]=$array[$j][$k]; #Tema de logica son asignaciones 
+        [double]$array[$j][$k]=$temp;
    
     }
     
-    for($k=$j+1;$k-lt$N;$k++){
     
-        $c= -$array[$k][$j]/$array[$j][$j];
-        for($l=$j;$l-lt$N+1;$l++){
-            if($j-eq$l){
+    #for 2
+    for( $k=$j+1; $k-lt$n;$k++){
+
+        [double]$c= (-[double]$array[$k][$j])/$array[$j][$j];
+        for( $l=$j; $l -lt $n+1; $l++ ){
+            if( $j -eq $l ){
                 $array[$k][$l]=0
-            }else{
-                $array[$k][$l]+=$c*$array[$j][$l]
             }
+            else{
+                #Esta linea trajo problemas por el double magico
+                $array[$k][$l] = [double]$array[$k][$l] + ($c*$array[$j][$l]) #aca para que funcione la operacion casteamos como double asi lo interpreta matematicamente
+            }
+        
         }
+
     }
 }
 
-write-host $array
+$x=@( for($w=0; $w -lt $n; $w++){0}) #creacion de array para las soluciones
+$x
+
+    #para visualizar la matriz triagulada
+    Write-Host "Matriz: $n"
+    for( $i=0; $i -lt $n; $i++ )
+    {
+          write-host $array[$i] | format-list #muestro la matriz en forma elegante :3 
+    }
+
+#for 3
+for( $j=$n-1; $j -ge 0; $j-- ){
+    #otra vez el tema del double
+    $x[$j]=[double]($array[$j][$n] / $array[$j][$j])
+    
+            
+    for( $k=$j-1; $k -ge 0; $k--){
+        #otra ves el tema del double
+        [double]$array[$k][$n] = [double]$array[$k][$n] - ([double]$array[$k][$j]*[double]$x[$j])
+        
+
+    }
+}
+    write-host "Solucion" $x |format-list
+    
+$x >solucion.txt
