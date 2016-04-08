@@ -15,15 +15,15 @@ Ordena los resultados finales en forma descendente
 .PARAMETER filtro
 Valor que debe filtrar, en las propiedades pasadas cómo parametros.
 .EXAMPLE
-get-process |.\ejercicio4.ps1 -propiedades Id,Handles,ProcessName  -asc -filtro 8*
+get-process |.\Ej4.ps1 -propiedades Id,Handles,ProcessName  -asc -filtro 8*
 .EXAMPLE 
-get-process |.\ejercicio4.ps1 -propiedades Id -filtro 9*
+get-process |.\Ej4.ps1 -propiedades Id -filtro 9*
 .EXAMPLE
-get-process |.\ejercicio4.ps1 -propiedades ProcessName -filtro svc*
+get-process |.\Ej4.ps1 -propiedades ProcessName -filtro svc*
 #>
 
 <#
-Nombre del Script: Ej5.ps1
+Nombre del Script: Ej4.ps1
 Trabajo Practico nro 1
 Programacion de scripts basicos en Powershell
 Ejercicio 04
