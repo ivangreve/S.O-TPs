@@ -27,41 +27,79 @@ Valenzuela Juan Santiago - 38624490
 Nicolás Satragno - 38527273
 Entrega: Primera Entrega
 #>
+
 Param(
-[Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”
+[Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”,
+[Parameter(Position=2, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $pathSalida = "solucion.txt”
 )
-
-
-#antes que nada se valida el path
+[reflection.assembly]::LoadWithPartialName("'Microsoft.VisualBasic") > $log # Incluyo esto para usar la funcion isNumber. 
+#antes que nada,antes que todo, se valida el path
 $ExistePath = Test-Path $path 
-
 if ($ExistePath -eq $false)
 {
      Write-Host "El path de entrada no existe"
      exit;
 }
-
-
+$existe = Test-Path $pathsalida
+if ($pathsalida -eq $false)
+{
+     Write-Host "El path de Salida no existe"
+     exit;
+}
 
 $array = New-Object System.Collections.ArrayList #Se crea la matriz
-
 $contenido = Get-Content $path #Se agarra el contenido del .txt
-
 $i = $true #variable que usare luego
-
+$ContFilas=0
 foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector de lineas de texto
 {
     if($i) #entra solo para agarrar la primera linea osea n.
         {
-            [int]$n = $obj  #guardo n. 
-            $i = $false; # asi no vuelve a entrar 
+            if($obj.length -ne 1) 
+            {
+                write "Primera linea, hay mas de un numero."
+                exit;
+            }
+          
+
+            if( [Microsoft.VisualBasic.Information]::isnumeric($obj) -eq $false) #Uso isnumeric para validar que el n sea numerico.
+            {
+                write "n no es numerico n = $obj" 
+                exit;
+            }
+              [int]$n = $obj  #guardo n.
+              $i = $false; # asi no vuelve a entrar 
         }
     else
         {
+            $ContFilas++
+            
             $linea = $obj -split " " # separo por espacios la linea de coeficientes asi me agarra cada coeficiente
+            
+            for($c=0;$c -le $n; $c++)
+            {
+                if( [Microsoft.VisualBasic.Information]::isnumeric($linea[$c]) -eq $false) #Uso isnumeric para validar que el n sea numerico.
+                {
+                    write "La fila contiene un caracter no numerico, o formato invalido (mas de un espacio) = $linea" 
+                    exit;
+                }
+            }
+            
+            if( $linea.length -ne ($n + 1) )
+            {
+                write "La fila $ContFilas,[$linea]no respeta las dimenciones del n ($n)"
+                exit;
+            
+            }
             $array.Add($linea)      
         }
 }
+    if($ContFilas -ne $n)
+    {
+        write "Cantidad de filas ($ContFilas) distinta a la indicada ($n)"
+        exit;
+    
+    }
     
     #para visualizar la matriz a tratar
     Write-Host "Matriz: $n"
@@ -70,7 +108,6 @@ foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector d
           write-host $array[$i] | format-list #muestro la matriz en forma elegante :3 
     }
    
-
 #Aca esta toda la logica, es logica, no solo explico el codigo.
 for( $j=0; $j -lt $n; $j++ )
 {
@@ -97,7 +134,6 @@ for( $j=0; $j -lt $n; $j++ )
     
     #for 2
     for( $k=$j+1; $k-lt$n;$k++){
-
         [double]$c= (-[double]$array[$k][$j])/$array[$j][$j];
         for( $l=$j; $l -lt $n+1; $l++ ){
             if( $j -eq $l ){
@@ -109,20 +145,16 @@ for( $j=0; $j -lt $n; $j++ )
             }
         
         }
-
     }
 }
-
 $x=@( for($w=0; $w -lt $n; $w++){0}) #creacion de array para las soluciones
 $x
-
     #para visualizar la matriz triagulada
     Write-Host "Matriz: $n"
     for( $i=0; $i -lt $n; $i++ )
     {
           write-host $array[$i] | format-list #muestro la matriz en forma elegante :3 
     }
-
 #for 3
 for( $j=$n-1; $j -ge 0; $j-- ){
     #otra vez el tema del double
@@ -133,9 +165,8 @@ for( $j=$n-1; $j -ge 0; $j-- ){
         #otra ves el tema del double
         [double]$array[$k][$n] = [double]$array[$k][$n] - ([double]$array[$k][$j]*[double]$x[$j])
         
-
     }
 }
     write-host "Solucion" $x |format-list
     
-$x >solucion.txt
+"$x" >$pathSalida
