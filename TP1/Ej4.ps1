@@ -2,7 +2,7 @@
 .SYNOPSIS
 Muestra los elementos de una colección de objetos que cumplen una condición. 
 .DESCRIPTION
-Se encarga de mostrar en pantalla las propiedades de una colección de objetos, en base a un valor filtro. Tanto las propiedades, como el filtro y la colección son pasados como parámetros al ejecutar el script. 
+Se encarga de mostrar en pantalla las propiedades de una colección de objetos, en base a un valor filtro o sin necesidad de este. Tanto las propiedades, como el filtro y la colección son pasados como parámetros al ejecutar el script. 
 
 .PARAMETER Pipeline
 Recibe una colección de objetos.
@@ -19,7 +19,7 @@ get-process |.\Ej4.ps1 -propiedades Id,Handles,ProcessName  -asc -filtro 8*
 .EXAMPLE 
 get-process |.\Ej4.ps1 -propiedades Id -filtro 9*
 .EXAMPLE
-get-process |.\Ej4.ps1 -propiedades ProcessName -filtro svc*
+get-process |.\Ej4.ps1 -propiedades ProcessName 
 #>
 
 <#
@@ -50,7 +50,12 @@ BEGIN
 {
    
     $ArrayList = [System.Collections.ArrayList]@()    
-     
+   
+    if(!$propiedades)
+    {
+       Write-Host Error. No se paso como parametro la propiedad.
+       exit
+    } 
     if($asc -eq $true -and $desc -eq $true)
     {
       Write-Host "Error al invocar script" 
@@ -60,50 +65,78 @@ BEGIN
 
 PROCESS
 {    
-    foreach ($obj in $Pipeline) 
-    {
-        $ArrayList.Add($obj)1>>2 #Lleno el array con los objetos que van llegando por el pipeline y redireciono salida para que no aparezca en pantalla
-    }    
+    
+       foreach ($obj in $Pipeline) 
+       {
+        $ArrayList.Add($obj)1>$null #Lleno el array con los objetos que van llegando por el pipeline y redireciono salida para que no aparezca en pantalla
+       }          
 }
 
 END
 {   
-      
-      if($asc -eq $True)
+      if($filtro) # si recibo como parámetro un filtro filtro usare el cmdlet where-object
       {
+        if($asc -eq $True)
+        {
          foreach($aux in $propiedades)
          {
               echo `n
               write-host resultados propiedad $aux
               $ArrayList   |  Sort-Object -Property $propiedades | Where-Object {$_.$aux -like $filtro} |
               Select-Object $propiedades | Format-Table -AutoSize 
-          }       
-      }
+              }       
+          }
+          else
+          {
+            if($desc -eq $True)
+            {
+               foreach($aux in $propiedades)
+               {
+                  echo `n
+                  write-host resultados propiedad $aux
+                  $ArrayList  |  Sort-Object -Property $propiedades -Descending| Where-Object {$_.$aux -like $filtro} |
+                  Select-Object $propiedades | Format-Table -AutoSize 
+              }       
+            }
+            else
+            {
+                 foreach($aux in $propiedades)
+                 {
+                    echo `n
+                    write-host resultados propiedad $aux
+                    $ArrayList  | Where-Object {$_.$aux -like $filtro} |Select-Object -Property $propiedades | Format-Table -AutoSize               
+                 }
+            }
+          }
+      
+      }#fin filtro
       else
       {
-        if($desc -eq $True)
+         if($asc -eq $True)
         {
-           foreach($aux in $propiedades)
-           {
+         
               echo `n
-              write-host resultados propiedad $aux
-              $ArrayList  |  Sort-Object -Property $propiedades -Descending| Where-Object {$_.$aux -like $filtro} |
+              write-host resultados propiedad $propiedades
+              $ArrayList   |  Sort-Object -Property $propiedades | 
               Select-Object $propiedades | Format-Table -AutoSize 
-           }       
-        }
-        else
-        {
-           
-             foreach($aux in $propiedades)
-             {
+              }       
+          
+          else
+          {
+            if($desc -eq $True)
+            {
+                  echo `n
+                  write-host resultados propiedad $propiedades
+                  $ArrayList  |  Sort-Object -Property $propiedades -Descending| 
+                  Select-Object $propiedades | Format-Table -AutoSize                     
+            }
+            else
+            {
                 echo `n
-                write-host resultados propiedad $aux
-                $ArrayList  | Where-Object {$_.$aux -like $filtro} |Select-Object -Property $propiedades | Format-Table -AutoSize 
-                
-             }
-                
-        }
-      }
-        
-     }
+                write-host resultados propiedad $propiedades
+                $ArrayList  |Select-Object -Property $propiedades | Format-Table -AutoSize                
+            }
+      }        
+    }
+ }
       

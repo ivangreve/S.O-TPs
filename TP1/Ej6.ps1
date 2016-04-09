@@ -44,6 +44,13 @@ Param
    [Parameter(Position = 3, Mandatory = $true)] [int] $intervalo
 )
 
+$cantPar = ($psboundparameters.Count + $args.Count)
+if( $cantPar -ne 3 )
+{
+  Write-Output "La cantidad parametros fue distinta a 3!"
+  exit
+}
+
 $existe1 = Test-Path $pathentrada
 $existe2 = Test-Path $pathdestino
 $pathentrada = Resolve-Path $pathentrada

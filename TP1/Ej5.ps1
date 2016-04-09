@@ -35,6 +35,12 @@ Param(
     [Parameter(Mandatory = $true,Position = 2)] $Nseg
 )
 
+$cantPar = ($psboundparameters.Count + $args.Count)
+if( $cantPar -ne 2 )
+{
+  Write-Output "La cantidad parametros fue distinta a 2!"
+  exit
+}
 if( $Mcant -isNot [int])
 {
     write "La cantidad de procesos debe ser un numero entero"

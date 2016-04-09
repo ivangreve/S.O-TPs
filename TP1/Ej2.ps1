@@ -36,7 +36,7 @@ Entrega: Primera Entrega
 
 Param(
   #Este  va a recibir la entrada por pipe si hubiera. Si no, queda en "blanco"
-    [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = “.”    
+    [Parameter(Position=1, Mandatory = $false)][String] $path = “.”    
 )
 
 #se ve si existe la ruta
@@ -58,25 +58,17 @@ foreach($value in $contenido)
 }
 
 
-
 foreach($obj in $contenido)
-{
-
-    
+{    
     if($HashTable.ContainsKey($obj.Extension) -eq $false) #Si la extension no existe en el hash table
-    {
-        
-        $HashTable.Add($obj.Extension,($obj.Length*100)/$tamtot) #Agrego elemento al Hash Table utilizando la extensión como Key y voy calculando el porcentaje
-        
+    {       
+        $HashTable.Add($obj.Extension,($obj.Length*100)/$tamtot) #Agrego elemento al Hash Table utilizando la extensión como Key y voy calculando el porcentaje        
     }
     else
     {
         $HashTable.Item($obj.Extension) += ($obj.Length*100)/$tamtot #Sumo el porcentaje de cada archivo ya existente en el Hash Table
-        
     }
-
     
-
 }
 
 
