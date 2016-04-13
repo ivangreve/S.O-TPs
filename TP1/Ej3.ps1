@@ -121,7 +121,7 @@ foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector d
                 exit;
             
             }
-            $array.Add($linea)      
+            $array.Add($linea) > $null  #Para que no muestre el contador por consola.
         }
 }
     if($ContFilas -ne $n)
@@ -178,7 +178,6 @@ for( $j=0; $j -lt $n; $j++ )
     }
 }
 $x=@( for($w=0; $w -lt $n; $w++){0}) #creacion de array para las soluciones
-$x
     #para visualizar la matriz triagulada
     Write-Host "Matriz: $n"
     for( $i=0; $i -lt $n; $i++ )
