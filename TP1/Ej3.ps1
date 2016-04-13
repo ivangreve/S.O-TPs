@@ -1,18 +1,49 @@
 <#
 .SYNOPSIS
-Resuelve un sistema de ecuaciones de n variables y n incógnitas.
+Resuelve sistemas de ecuaciones lineales de N ecuaciones por N incognitas        
+
 .DESCRIPTION
-Recive un txt con los datos para hacer resolver el sistema de ecuaciones y lo guarda en otro txt de salida.
-el parametro es -path, debe tener una estructura como la siguiente:
-3 (n = cantidad de incognitas)
-3 2 1 1   (las tres ecuaciones con los primeros 3 coeficientes y la 4 columna de terminos independientes)
+Recibe por parametro un archivo txt de entrada con datos para la resolución de un sistema de ecuaciones lineales y guarda la resolución de las incognitas en otro archivo txt de salida.
+
+.PARAMETER in
+Para especificar la ubicación del archivo de entrada.
+(Por defecto el archivo de entrada es lineal.txt)
+El archivo de entrada deber?respetar la siguiente estructura:
+		
+n (cantidad de incognitas del sistema lineal)
+a1 a2 ... an Na
+b1 b2 ... bn Nb
+.         .  .
+.         .  . 
+.         .  . 
+n1 n2 ... nn Nn
+.PARAMETER out
+Para especificar la ubicación del archivo de salida.
+(Por defecto el archivo de salida es solve.txt)
+
+El archivo de salida tendr?la siguiente estructura:
+		
+x1 x2 ...  xn (n cantidad de incognitas del sistema lineal)
+		
+.EXAMPLE
+Crear un archivo lineal.txt en el directorio del script con este sistema:
+3 
+3 2 1 1 
 5 3 3 3
 1 1 1 0
-Devuelve 
-.PARAMETER path
-El directorio del archivo en el que se requiere para sacar los datos
-( por defecto en la raiz del script con el nombre gauss.txt)
-.EXAMPLE
+        
+La primera linea corresponde a la cantidad de incognitas del sistema
+En las subsiguientes lineas, los valores de las tres ecuaciones con los primeros 3 coeficientes y la cuarta columna con los t閞minos independientes
+		
+Ejecutar:
+
+.\Ejercicio_3.ps1 -in lineal.txt -out solucion.txt
+		
+El contenido de solucion.txt ser?
+
+1.5 -2 0.5
+
+En orden los valores de la resolución de cada incognita en una linea
 #>
 <#
 Nombre del Script: Ej3.ps1
@@ -32,19 +63,18 @@ Param(
 [Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path = "gauss.txt”,
 [Parameter(Position=2, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $pathSalida = "solucion.txt”
 )
-[reflection.assembly]::LoadWithPartialName("'Microsoft.VisualBasic") > $log # Incluyo esto para usar la funcion isNumber. 
+[reflection.assembly]::LoadWithPartialName("'Microsoft.VisualBasic") > $null # Incluyo esto para usar la funcion isNumber. 
 #antes que nada,antes que todo, se valida el path
 $ExistePath = Test-Path $path 
 if ($ExistePath -eq $false)
 {
-     Write-Host "El path de entrada no existe"
+     Write-Warning "El path de entrada no existe"
      exit;
 }
-$existe = Test-Path $pathsalida
-if ($pathsalida -eq $false)
+$ExistePath = Test-Path $pathsalida
+if ($ExistePath -eq $false)
 {
-     Write-Host "El path de Salida no existe"
-     exit;
+     Write-Warning "El path de Salida no existe, se creara uno. ($pathSalida)"
 }
 
 $array = New-Object System.Collections.ArrayList #Se crea la matriz
@@ -57,14 +87,14 @@ foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector d
         {
             if($obj.length -ne 1) 
             {
-                write "Primera linea, hay mas de un numero."
+                Write-Warning "Primera linea, hay mas de un numero."
                 exit;
             }
           
 
             if( [Microsoft.VisualBasic.Information]::isnumeric($obj) -eq $false) #Uso isnumeric para validar que el n sea numerico.
             {
-                write "n no es numerico n = $obj" 
+                Write-Warning  "n no es numerico n = $obj" 
                 exit;
             }
               [int]$n = $obj  #guardo n.
@@ -80,14 +110,14 @@ foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector d
             {
                 if( [Microsoft.VisualBasic.Information]::isnumeric($linea[$c]) -eq $false) #Uso isnumeric para validar que el n sea numerico.
                 {
-                    write "La fila contiene un caracter no numerico, o formato invalido (mas de un espacio) = $linea" 
+                    Write-Warning  "La fila contiene un caracter no numerico, o formato invalido (mas de un espacio) = $linea" 
                     exit;
                 }
             }
             
             if( $linea.length -ne ($n + 1) )
             {
-                write "La fila $ContFilas,[$linea]no respeta las dimenciones del n ($n)"
+                Write-Warning  "La fila $ContFilas,[$linea]no respeta las dimenciones del n ($n)"
                 exit;
             
             }
@@ -96,13 +126,13 @@ foreach($obj in $contenido) #foreach para recorrer el $contenido, es un vector d
 }
     if($ContFilas -ne $n)
     {
-        write "Cantidad de filas ($ContFilas) distinta a la indicada ($n)"
+        Write-Warning  "Cantidad de filas ($ContFilas) distinta a la indicada ($n)"
         exit;
     
     }
     
     #para visualizar la matriz a tratar
-    Write-Host "Matriz: $n"
+    Write-Host "Matriz($n) a tratar."
     for( $i=0; $i -lt $n; $i++ )
     {
           write-host $array[$i] | format-list #muestro la matriz en forma elegante :3 
