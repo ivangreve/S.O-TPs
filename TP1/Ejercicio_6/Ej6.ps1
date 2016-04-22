@@ -53,8 +53,28 @@ if( $cantPar -ne 3 )
 
 $existe1 = Test-Path $pathentrada
 $existe2 = Test-Path $pathdestino
-$pathentrada = Resolve-Path $pathentrada
-$pathdestino = Resolve-Path $pathdestino
+if($existe1 -eq $true -and $existe2 -eq $true)
+{
+   $esPathEntrada = (Get-Item $pathentrada) -is [System.IO.DirectoryInfo] 
+   $esPathDestino = (Get-Item $pathdestino) -is [System.IO.DirectoryInfo]
+   if($esPathEntrada -eq $true -and $esPathDestino -eq $true)
+   {
+       $pathentrada = Resolve-Path $pathentrada
+       $pathdestino = Resolve-Path $pathdestino
+   }
+   else
+   {
+     Write-Host algun path recibido como parametro es un archivo
+     exit
+   }
+
+}
+else
+{
+   Write-Host hay un path inexistente
+   exit
+}
+
 
 if($intervalo -le 0)
 {
@@ -62,8 +82,8 @@ if($intervalo -le 0)
     exit
 }
 
-if($existe1 -eq $True -and $existe2 -eq $True)
-{
+
+
 
     while(1)
     {
@@ -79,8 +99,5 @@ if($existe1 -eq $True -and $existe2 -eq $True)
         
           
     }
-}
-else
-{
-   Write-Host "Algun path no existe."
-}
+
+
