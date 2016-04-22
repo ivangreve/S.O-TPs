@@ -29,8 +29,8 @@ Entrega: Primera Entrega
 #>
 
 Param(
-[Parameter(Position=1, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $path,
-[Parameter(Position=2, Mandatory = $false)][ValidateNotNullOrEmpty()][String] $pathSalida
+[Parameter(Position=1, Mandatory = $true)][ValidateNotNullOrEmpty()][String] $path,
+[Parameter(Position=2, Mandatory = $true)][ValidateNotNullOrEmpty()][String] $pathSalida
 )
 [reflection.assembly]::LoadWithPartialName("'Microsoft.VisualBasic") > $log # Incluyo esto para usar la funcion isNumber. 
 #antes que todo, se valida cantidad de parámetros y los path
@@ -47,7 +47,7 @@ if ($ExistePath -eq $false)
      exit;
 }
 $existe = Test-Path $pathsalida
-if ($pathsalida -eq $false)
+if ($existe -eq $false)
 {
      Write-Host "El path de Salida no existe"
      exit;
