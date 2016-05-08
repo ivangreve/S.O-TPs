@@ -5,8 +5,12 @@
 #Programación de scripts en tecnología bash
 #Ejercicio 01
 
-#Integrantes del grupo:
-#Greve Iván - 38617763
+# Integrantes del grupo:
+# Greve Iván - 38617763
+# Boullon Daniel Ernesto - 36385582
+# Silvero Heber Ezequiel - 36404597
+# Valenzuela Juan Santiago - 38624490
+# Nicolás Satragno - 38527273
 
 ./script1.sh 10
 echo "Resultado $variable"
