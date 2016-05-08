@@ -26,6 +26,7 @@ Ejemplo
 ./Ej2.sh -u pepito
 ./Ej2.sh -a 
 "
+}
 # Fin Funciones;
 
 
