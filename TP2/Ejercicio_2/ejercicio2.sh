@@ -78,11 +78,12 @@ fi
 if [ "$parametro" = "-a" ]
 	then
 		echo ""
-		echo "Usuario    UltimaConexion"
-		echo "========== =============="
-		
-		who | awk -F" " '{printf"%-10s Activo en %s\n",$1,$2}'
-		last | awk -F" " '{printf"%-10s %s/%s  %s  \n", $1,$6,$5,$7}'
+		printf "%-30s %s\n" "Usuario" "UltimaConexion"
+		divider==============================
+                divider=$divider' '$divider
+		echo $divider
+		who | awk -F" " '{printf"%-30s Activo en %s\n",$1,$2}'
+		last -F | awk  -F " " -f reporte.awk
 
 	fi
 if [ "$parametro" = "-u"  ]
