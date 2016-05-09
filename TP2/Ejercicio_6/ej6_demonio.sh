@@ -56,7 +56,8 @@ done
 SALIDA=""
 for EXTENSION in ${!HASH_EXTENSIONES[@]}
 do
-  SALIDA=$SALIDA$(printf "%-26s %-26s\\\\n" "$EXTENSION" "${HASH_EXTENSIONES[$EXTENSION]}")
+  FECHA=`date "+%d/%m/%y %H:%M:%S"`
+  SALIDA=$SALIDA$(printf "%s %-26s %-26s\\\\n" "$FECHA" "$EXTENSION" "${HASH_EXTENSIONES[$EXTENSION]}")
 done
 echo -en $SALIDA >> $RUTA_SALIDA
 
@@ -123,6 +124,7 @@ do
     SALIDA=""
     for EXTENSION in ${!NUEVO_HASH_EXTENSIONES[@]}
     do
+      FECHA=`date "+%d/%m/%y %H:%M:%S"`
       if [[ ! ${HASH_EXTENSIONES[$EXTENSION]} = ${NUEVO_HASH_EXTENSIONES[$EXTENSION]} ]]
       then
         if [ -z ${HASH_EXTENSIONES[$EXTENSION]+isset} ]
@@ -137,7 +139,7 @@ do
           fi
           DIFERENCIA="($DIFERENCIA%)"
         fi
-        SALIDA=$SALIDA$(printf "%-26s %-26s %-26s\\\\n" "$EXTENSION" "${NUEVO_HASH_EXTENSIONES[$EXTENSION]}" "$DIFERENCIA")
+	SALIDA=$SALIDA$(printf "%s %-26s %-26s %-26s\\\\n" "$FECHA" "$EXTENSION" "${NUEVO_HASH_EXTENSIONES[$EXTENSION]}" "$DIFERENCIA")
       fi
     done
 
@@ -145,7 +147,7 @@ do
     do
       if [ -z ${NUEVO_HASH_EXTENSIONES[$EXTENSION]+isset} ]
       then
-        SALIDA=$SALIDA$(printf "%-26s %-26s %-26s\\\\n" "$EXTENSION" "0" "(extensión removida)")
+        SALIDA=$SALIDA$(printf "%s %-26s %-26s %-26s\\\\n" $FECHA "$EXTENSION" "0" "(extensión removida)")
       fi
     done
 
