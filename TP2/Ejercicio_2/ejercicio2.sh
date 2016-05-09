@@ -82,8 +82,8 @@ if [ "$parametro" = "-a" ]
 		divider==============================
                 divider=$divider' '$divider
 		echo $divider
-		who | awk -F" " '{printf"%-30s Activo en %s\n",$1,$2}'
-		last -F | awk  -F " " -f reporte.awk
+		who | awk -F" " '{printf"%-30s Activo en %s\n",$1,$2}'  
+		last -F | awk  -F " " -f reporte.awk  #llamo script awk para formatear salida
 
 	fi
 if [ "$parametro" = "-u"  ]
