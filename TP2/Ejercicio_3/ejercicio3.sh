@@ -96,15 +96,21 @@ vector="";
 i=0;
 IFS=:
 for path in $PATH 
-	do 	
-		vector[$i]=$(find "$path" -type f -executable | wc -l)
-		(( ejecutablesPATH+=vector[$i] ))
+	do
+		if [ -d "$path" ] 
+		then 	
+			vector[$i]=$(find "$path" -type f -executable | wc -l)
+			(( ejecutablesPATH+=vector[$i] ))
+		else
+			echo "No existe la ruta $path."
+			vector[$i]=0
+			
+		fi 
 		(( i++ ))
 	done
 
 #codigo:
 i=0;
-
 
 
 if [ "$path_check" = "no" ]
@@ -113,8 +119,11 @@ if [ "$path_check" = "no" ]
 		echo "Cantidad de comandos disponibles desde el PATH: $ejecutablesPATH."
 		echo "Detalle de comando disponibles por directorio:"
 		for path in $PATH 
-			do 	
-				echo "     $path: ${vector[$i]}"
+			do 
+				if [ ${vector[$i]} -ne 0 ]
+				then
+					echo "     $path: ${vector[$i]}"	
+				fi
 				(( i++ ))
 			done 
 	else
@@ -122,8 +131,11 @@ if [ "$path_check" = "no" ]
 		echo "Cantidad de comandos disponibles desde el PATH: $ejecutablesPATH." >> "$pathSalida"
 		echo "Detalle de comando disponibles por directorio:" >> "$pathSalida"
 		for path in $PATH 
-			do 	
-				echo "     $path: ${vector[$i]}" >> "$pathSalida"
+			do
+				if [ ${vector[$i]} -ne 0 ]
+				then
+					echo "     $path: ${vector[$i]}" >> "$pathSalida"
+				fi
 				(( i++ ))
 			done 
 	fi
