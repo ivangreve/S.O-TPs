@@ -58,14 +58,14 @@ else
 		then	
 			if [ "$1" = "-u" -a $# == 2 ]
 			then
-				cat /etc/passwd | grep "$2" > /dev/null && exist=0 || exist=1
-				if [ $exist -eq 0 ]
-					then
+				cat /etc/passwd | grep "$2" 1> /dev/null 2>/dev/null && exist=0 || exist=1 #redirecciono salidas comando grep para que no aparezcan en pantalla 
+				if [ "$exist" -eq 0 ]
+				then
 						echo "El usuario existe: $2"
-					else
+				else
 						echo "El usuario "$2" no existe"
 						exit;
-					fi
+				fi
 			else
 				echo "Parametros de sobra, obtenga ayuda con -help, -h, o -?"
 				exit;
@@ -82,8 +82,8 @@ if [ "$parametro" = "-a" ]
 		divider==============================
                 divider=$divider' '$divider
 		echo $divider
-		who | awk -F" " '{printf"%-30s Activo en %s\n",$1,$2}'  
-		last -F | awk  -F " " -f reporte.awk  #llamo script awk para formatear salida
+		who | awk -F" " '{printf"%-30s Activo en %s\n",$1,$2}'
+		last -F | awk  -F " " -f reporte.awk
 
 	fi
 if [ "$parametro" = "-u"  ]
