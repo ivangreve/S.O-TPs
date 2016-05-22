@@ -19,6 +19,9 @@
 CARPETA=$1
 RUTA_SALIDA=$2
 
+# Archivo que debe borrarse al terminar el script.
+ARCHIVO_LOCK=$3
+
 TIEMPO_SLEEP=30
 
 # Declaro el array asociativo donde se guardan extensión -> tamaño.
@@ -29,6 +32,8 @@ declare -A HASH_MD5
 
 # Este pedacito mágico nos permite separar en el for por \n y no espacios.
 IFS=$'\n'
+
+trap "rm $ARCHIVO_LOCK" EXIT
 
 # Obtengo una lista con todos los archivos.
 LISTA_ARCHIVOS=$( find "$CARPETA" -type f)

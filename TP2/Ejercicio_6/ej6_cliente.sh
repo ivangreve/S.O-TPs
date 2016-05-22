@@ -113,7 +113,7 @@ arrancar() {
   # Arrancamos el demonio.
   mkdir $RUTA_BUFFERS &> /dev/null
   echo "" > $RUTA_BUFFERS/$ID_NUEVO_DEMONIO
-  bash ./ej6_demonio.sh "$CARPETA_NUEVO_DEMONIO" "$RUTA_BUFFERS/$ID_NUEVO_DEMONIO" &
+  bash ./ej6_demonio.sh "$CARPETA_NUEVO_DEMONIO" "$RUTA_BUFFERS/$ID_NUEVO_DEMONIO" "$RUTA_ARCHIVOS/$ID_NUEVO_DEMONIO" &
 
   PID_DEMONIO=$!
 
@@ -122,8 +122,6 @@ arrancar() {
 
   # Guardamos los datos del demonio en su archivo temporal.
   echo $PID_DEMONIO:$CARPETA_NUEVO_DEMONIO > $RUTA_ARCHIVOS/$ID_NUEVO_DEMONIO
-
-  listen $ID_NUEVO_DEMONIO
 }
 
 # Consulta el estado de los demonios.
@@ -157,7 +155,6 @@ detener() {
   PID=`grep -o ^[0-9]* <<< $LINEA`
 
   kill $PID
-  rm $RUTA_ARCHIVOS/$1
 
   echo "Trabajo $1 detenido"
 }
