@@ -1,0 +1,96 @@
+== Metodología ==
+Se usó un tamaño de array de 40.960 posiciones (160kB) y 1000 trabajos por
+ejecución. Dado que las funciones wait3 y wait4 fueron deprecadas y el entorno
+de pruebas es una versión muy reciente de Linux, se defirieron en favor de
+getrusage(RUSAGE_SELF). En principio lo adecuado hubiera sido RUSAGE_CHILDREN
+que solo devuelve la información de los hijos (sin sumar la del proceso padre),
+pero en este caso muchos tiempos volvían 0 incluso con tamaños de array más
+grandes y cargas pesadas. Consideramos que el overhead añadido de crear el
+array e inicializarlo, al ser el mismo para todos los casos de prueba, no altera
+las conclusiones.
+
+== Conclusiones ==
+
+= Velocidad =
+Se puede observar que los procesos livianos se ejecutan más rápidamente que los
+procesos livianos al realizar tareas de lectura:
+
++-----------------------------+-------------------------+------------------------+
+|                             | Proceso Liviano Lectura | Proceso Pesado Lectura |
++-----------------------------+-------------------------+------------------------+
+| Tiempo reloj                |                132720µs |               180024µs |
+| Tiempo promedio             |                   132µs |                  180µs |
+| Tiempo CPU sistema total    |                     0µs |                32000µs |
+| Tiempo CPU usuario total    |                 16000µs |                    0µs |
+| Tiempo CPU sistema promedio |                     0µs |                   32µs |
+| Tiempo CPU usuario promedio |                    16µs |                    0µs |
++-----------------------------+-------------------------+------------------------+
+
+Esto es adecuado a lo visto en la teoría: el costo de creación de un proceso
+liviano es menor del costo de un proceso pesado. El tiempo reloj es del 35% más
+para los procesos pesados en este caso.
+
+Sin embargo, al comparar tareas de escritura:
+
++-----------------------------+---------------------------+--------------------------+
+|                             | Proceso Liviano Escritura | Proceso Pesado Escritura |
++-----------------------------+---------------------------+--------------------------+
+| Tiempo reloj                |                  772444µs |                 519297µs |
+| Tiempo promedio             |                     772µs |                    519µs |
+| Tiempo CPU sistema total    |                    4000µs |                  40000µs |
+| Tiempo CPU usuario total    |                  100000µs |                  12000µs |
+| Tiempo CPU sistema promedio |                       4µs |                     40µs |
+| Tiempo CPU usuario promedio |                     100µs |                     12µs |
++-----------------------------+---------------------------+--------------------------+
+
+Se nota que el proceso livano tarda un 33% más. Si bien es difícil determinar la
+causa de este fenómeno, puede ser que al realizar una tarea más intensiva (la
+escritura lleva más tiempo que la lectura), la administración de procesos más
+livianos lleve más overhead que la de pesados.
+
+= Cambios de página =
++------------------+-------------------------+------------------------+
+|                  | Proceso Liviano Lectura | Proceso Pesado Lectura |
++------------------+-------------------------+------------------------+
+| Soft page faults |                     187 |                   4182 |
+| Hard page faults |                       0 |                      0 |
++------------------+-------------------------+------------------------+
+
++------------------+---------------------------+--------------------------+
+|                  | Proceso Liviano Escritura | Proceso Pesado Escritura |
++------------------+---------------------------+--------------------------+
+| Soft page faults |                       187 |                     4184 |
+| Hard page faults |                         0 |                        0 |
++------------------+---------------------------+--------------------------+
+
+En el caso de los procesos pesados, cada proceso hace 4 fallas de memoria para
+cargar el código. Los procesos livianos comparten la misma página de código, y
+no necesitan irlo a buscar. Esta conclusión se obtiene a partir de que la
+cantidad de fallas no varía significativamente con el tamaño del array pero sí
+con la cantidad de procesos.
+
+Las alrededor de 187 páginas adicionales deben venir del resto de tareas
+administrativas que realiza el programa.
+
+= Señales recibidas =
+En todos los casos fueron 0.
+
+= Cambios de contexto =
++---------------+-------------------------+------------------------+
+|               | Proceso Liviano Lectura | Proceso Pesado Lectura |
++---------------+-------------------------+------------------------+
+| Voluntarios   |                    1000 |                   1000 |
+| Involuntarios |                       3 |                      2 |
++---------------+-------------------------+------------------------+
+
++---------------+---------------------------+--------------------------+
+|               | Proceso Liviano Escritura | Proceso Pesado Escritura |
++---------------+---------------------------+--------------------------+
+| Voluntarios   |                      1000 |                     1000 |
+| Involuntarios |                         8 |                        1 |
++---------------+---------------------------+--------------------------+
+
+Se observa en todos los casos un cambio de contexto por cada proceso, que es lo
+que se esperaba. Los involuntarios pueden venir de interrupciones del CPU. Está
+claro que cada tarea se realiza antes de que termine el cuanto, o habría muchos
+más cambios de contexto involuntarios.
